@@ -1,10 +1,10 @@
 package main
 
 import (
-	"v1_gorm_direct/config"
 	"log"
 	"net/http"
 	"os"
+	"v1_gorm_direct/config"
 	"v1_gorm_direct/graph"
 	"v1_gorm_direct/graph/generated"
 
@@ -25,11 +25,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error loading .env file")
 	}
-	
+
 	conn := config.InitMysql()
 	defer config.CloseConnectDB(conn)
 
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{DB:conn}}))
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)

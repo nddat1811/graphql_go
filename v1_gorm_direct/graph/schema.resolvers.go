@@ -5,33 +5,37 @@ package graph
 
 import (
 	"context"
+	"fmt"
+	"v1_gorm_direct/config"
+	"v1_gorm_direct/controller"
 	"v1_gorm_direct/graph/generated"
 	"v1_gorm_direct/graph/model"
+	model2 "v1_gorm_direct/model"
+	"v1_gorm_direct/service"
 )
 
 // CreateNewUser is the resolver for the createNewUser field.
-func (r *mutationResolver) CreateNewUser(ctx context.Context, input model.NewUser) (*model.User, error) {
-	user := model.User{
-		Name:     input.Name,
-		Email:    input.Email,
-		Password: input.Password,
-	}
-
-	if err := r.DB.Create(&user).Error; err != nil {
-		return &user, err
-	}
-
-	return &user, nil
+func (r *mutationResolver) CreateNewUser(ctx context.Context, input model.NewUser) (*model.Respone, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 // GetAllUsers is the resolver for the getAllUsers field.
 func (r *queryResolver) GetAllUsers(ctx context.Context) ([]*model.User, error) {
-	var users []*model.User
+	DB := config.DB
+	userRepository := model2.NewUserModel(DB)
+	ctr := controller.NewUserController(userRepository)
+	re := ctr.GetAllUsers()
+	return re, nil
+}
 
-	if err := r.DB.Table(`users`).Find(&users).Error; err != nil {
-		return users, err
-	}
-	return users, nil
+// Login is the resolver for the login field.
+func (r *queryResolver) Login(ctx context.Context, input model.UserLogin) (*model.LoginResponse, error) {
+	DB := config.DB
+	userRepository := model2.NewUserModel(DB)
+	ctr := controller.NewAuthController(userRepository, service.NewAuthService())
+
+	re := ctr.Login(input)
+	return re, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.
@@ -42,10 +46,3 @@ func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//    it when you're done.
-//  - You have helper methods in this file. Move them out to keep these resolver files clean.

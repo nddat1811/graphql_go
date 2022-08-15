@@ -2,10 +2,19 @@
 
 package model
 
+type LoginResponse struct {
+	ID    string `json:"id"`
+	Token string `json:"token"`
+}
+
 type NewUser struct {
 	Name     string `json:"name"`
 	Password string `json:"password"`
 	Email    string `json:"email"`
+}
+
+type Respone struct {
+	Msg string `json:"msg"`
 }
 
 type User struct {
@@ -13,4 +22,9 @@ type User struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+type UserLogin struct {
+	Password string `json:"password"`
+	Email    string `json:"email"`
 }

@@ -10,7 +10,8 @@ type User {
 }
 
 type Query {
-  getAllUsers: [User!]!
+  getAllUsers: [User]!
+  login(input: UserLogin!): LoginResponse!
 }
 
 input NewUser {
@@ -19,6 +20,17 @@ input NewUser {
   email: String!
 }
 
+input UserLogin {
+  password: String!
+  email: String!
+}
+type LoginResponse {
+  id: String!
+  token: String!
+}
+type Respone {
+  msg: String!
+}
 type Mutation {
-  createNewUser(input: NewUser!): User!
+  createNewUser(input: NewUser!): Respone!  
 }
